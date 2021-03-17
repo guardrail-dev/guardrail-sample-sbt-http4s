@@ -1,5 +1,3 @@
-package io.chrisdavenport.guardrailhttp4ssample
-
 import cats.{Order => _, _}
 import cats.syntax.all._
 import cats.effect._

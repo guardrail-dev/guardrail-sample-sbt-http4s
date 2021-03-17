@@ -1,5 +1,3 @@
-package io.chrisdavenport.guardrailhttp4ssample
-
 import cats.syntax.all._
 import cats.effect._
 
