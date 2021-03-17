@@ -25,10 +25,18 @@ lazy val `guardrail-http4s-sample` = project.in(file("."))
   .settings(commonSettings)
   .settings(
     name := "guardrail-http4s-sample",
+
+
+    // Where all the magic lives
+    // Translates the openapi documentation into code generation targets
+    // after `sbt compile` files will be populated in
+    // `/src/target/scala-2.13/src_managed/main/example`
+    // with folder for server and client which hold their respective generated code.
     guardrailTasks in Compile := List(
       ScalaServer(file("server.yaml"), pkg="example.server", framework="http4s"),
       ScalaClient(file("server.yaml"), pkg="example.client", framework="http4s")
     )
+
   )
 
 // General Settings
@@ -72,18 +80,18 @@ lazy val commonSettings = Seq(
 
 // General Settings
 inThisBuild(List(
-  organization := "io.chrisdavenport",
+  organization := "com.example",
   developers := List(
     Developer("ChristopherDavenport", "Christopher Davenport", "chris@christopherdavenport.tech", url("https://github.com/ChristopherDavenport"))
   ),
 
-  homepage := Some(url("https://github.com/ChristopherDavenport/guardrail-http4s-sample")),
+  homepage := Some(url("https://github.com/guardrail-dev/guardrail-http4s-sample")),
   licenses += ("MIT", url("http://opensource.org/licenses/MIT")),
 
   pomIncludeRepository := { _ => false},
   scalacOptions in (Compile, doc) ++= Seq(
       "-groups",
       "-sourcepath", (baseDirectory in LocalRootProject).value.getAbsolutePath,
-      "-doc-source-url", "https://github.com/ChristopherDavenport/guardrail-http4s-sample/blob/v" + version.value + "€{FILE_PATH}.scala"
+      "-doc-source-url", "https://github.com/guardrail-dev/guardrail-http4s-sample/blob/v" + version.value + "€{FILE_PATH}.scala"
   )
 ))
