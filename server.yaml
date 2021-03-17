@@ -55,6 +55,7 @@ paths:
       description: Place a new order in the store
       operationId: placeOrder
       requestBody:
+        required: true
         content:
           application/json:
             schema:

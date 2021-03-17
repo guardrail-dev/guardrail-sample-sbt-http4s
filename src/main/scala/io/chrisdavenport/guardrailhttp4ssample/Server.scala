@@ -40,16 +40,12 @@ object Server {
         .map(_.fold[GetOrderByIdResponse](respond.NotFound)(o => respond.Ok(o)))
 
     // Weird that this is optional
-    def placeOrder(respond: PlaceOrderResponse.type)(body: Option[Order]): F[PlaceOrderResponse] = 
-      body.traverse{order => 
-        for {
-          id <- order.id.fold(Sync[F].delay(scala.util.Random.nextLong))(_.pure[F])
-          newOrder = order.copy(id = id.some)
-          _ <- map.update(m => m + (id -> newOrder))
-        } yield respond.Ok(newOrder)
-      }.map(
-        _.getOrElse(respond.MethodNotAllowed)
-      )
+    def placeOrder(respond: PlaceOrderResponse.type)(body: Order): F[PlaceOrderResponse] = 
+      for {
+        id <- body.id.fold(Sync[F].delay(scala.util.Random.nextLong))(_.pure[F])
+        newOrder = body.copy(id = id.some)
+        _ <- map.update(m => m + (id -> newOrder))
+      } yield respond.Ok(newOrder)
   }
 
 }
