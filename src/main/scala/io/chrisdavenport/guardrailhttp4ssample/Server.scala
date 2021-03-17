@@ -10,16 +10,35 @@ import org.http4s.implicits._
 import example.server.definitions._
 import example.server.store._
 import org.http4s.ember.server.EmberServerBuilder
+import org.http4s.ember.client.EmberClientBuilder
+import scala.concurrent.duration._
 
 object Server {
 
   def server[F[_]: Concurrent: Timer : ContextShift]: Resource[F, Unit] = for {
+    // Shared State
     map <- Resource.liftF(
       Ref[F].of(Map[Long, Order]())
     )
+
+    // Generate Server
     s <- EmberServerBuilder.default[F]
-      .withHttpApp(new StoreResource[F]().routes(Server.handler(map)).orNotFound)
+      .withHttpApp(new StoreResource[F]().routes(Server.handler(map)).orNotFound) // Server
       .build
+
+    // Play with Client Against the Server
+    client <- EmberClientBuilder.default[F]
+      .build
+      .map(example.client.store.StoreClient.httpClient(_, "http://localhost:8080"))
+    _ <- Resource.liftF(
+      client.placeOrder(example.client.definitions.Order(id = Some(5L)))
+    )
+    resp <- Resource.liftF(
+      client.getOrderById(5L)
+    )
+    _ <- Resource.liftF(
+      Sync[F].delay(println(resp))
+    )
   } yield ()
 
   def handler[F[_]: Sync](map: Ref[F, Map[Long, Order]]) = new StoreHandler[F]{

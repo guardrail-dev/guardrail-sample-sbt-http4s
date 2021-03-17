@@ -26,6 +26,7 @@ lazy val `guardrail-http4s-sample` = project.in(file("."))
     name := "guardrail-http4s-sample",
     guardrailTasks in Compile := List(
       ScalaServer(file("server.yaml"), pkg="example.server", framework="http4s"),
+      ScalaClient(file("server.yaml"), pkg="example.client", framework="http4s")
     )
   )
 
