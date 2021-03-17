@@ -15,16 +15,26 @@ object Server {
 
   def server[F[_]: Concurrent: Timer : ContextShift]: Resource[F, Unit] = for {
     // Shared State
-    map <- Resource.liftF(
-      Ref[F].of(Map[Long, Order]())
+    inventory <- Resource.liftF(
+      Ref[F].of(Map[String, Int]( // Initial Inventory
+        "Kibble" -> 10,
+        "Treats" -> 3
+      ))
+    )
+    orders <- Resource.liftF(
+      Ref[F].of(Map[Long, Order]( // Initial Orders
+        123L -> Order(id = Some(123L), petId = Some(5L), quantity = Some(3), status = Some(Order.Status.Placed))
+      ))
     )
 
     // Generate Server
     s <- EmberServerBuilder.default[F]
-      .withHttpApp(new StoreResource[F]().routes(Server.handler(map)).orNotFound) // Server
+      .withHttpApp(new StoreResource[F]().routes(Server.handler(inventory, orders)).orNotFound) // Server
       .build
 
     // Play with Client Against the Server
+    // This could be another service communicating with this one
+    // in the same fashion
     client <- EmberClientBuilder.default[F]
       .build
       .map(example.client.store.StoreClient.httpClient(_, "http://localhost:8080"))
@@ -39,20 +49,19 @@ object Server {
     )
   } yield ()
 
-  def handler[F[_]: Sync](map: Ref[F, Map[Long, Order]]) = new StoreHandler[F]{
+  def handler[F[_]: Sync](inventory: Ref[F, Map[String, Int]], orders: Ref[F, Map[Long, Order]]) = new StoreHandler[F]{
 
-    // We have no inventory, only orders
     def getInventory(respond: GetInventoryResponse.type)(): F[GetInventoryResponse] = 
-      Applicative[F].pure(respond.Ok(Map()))
+      inventory.get.map(respond.Ok(_))
 
     def deleteOrder(respond: DeleteOrderResponse.type)(orderId: Long): F[DeleteOrderResponse] = 
-      map.modify{m => 
+      orders.modify{m => 
         val out = m.get(orderId).fold[DeleteOrderResponse](respond.NotFound)(_ => respond.Accepted)
         (m - orderId, out)
       }
 
     def getOrderById(respond: GetOrderByIdResponse.type)(orderId: Long): F[GetOrderByIdResponse] = 
-      map.get
+      orders.get
         .map(_.get(orderId))
         .map(_.fold[GetOrderByIdResponse](respond.NotFound)(o => respond.Ok(o)))
 
@@ -61,7 +70,7 @@ object Server {
       for {
         id <- body.id.fold(Sync[F].delay(scala.util.Random.nextLong))(_.pure[F])
         newOrder = body.copy(id = id.some)
-        _ <- map.update(m => m + (id -> newOrder))
+        _ <- orders.update(m => m + (id -> newOrder))
       } yield respond.Ok(newOrder)
   }
 

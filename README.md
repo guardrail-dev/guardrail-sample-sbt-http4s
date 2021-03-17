@@ -1,14 +1,26 @@
-# guardrail-http4s-sample - Guardrail with Http4s [![Build Status](https://travis-ci.com/ChristopherDavenport/guardrail-http4s-sample.svg?branch=master)](https://travis-ci.com/ChristopherDavenport/guardrail-http4s-sample) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.chrisdavenport/guardrail-http4s-sample_2.12/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.chrisdavenport/guardrail-http4s-sample_2.12) ![Code of Consuct](https://img.shields.io/badge/Code%20of%20Conduct-Scala-blue.svg)
+# guardrail-http4s-sample - Guardrail with Http4s 
 
-## [Head on over to the microsite](https://ChristopherDavenport.github.io/guardrail-http4s-sample)
+**Alumnus of the Davenverse**
 
-## Quick Start
+A simple project to show what a guardrail+http4s service could look like.
 
-To use guardrail-http4s-sample in an existing SBT project with Scala 2.11 or a later version, add the following dependencies to your
-`build.sbt` depending on your needs:
+Some sample curls:
 
-```scala
-libraryDependencies ++= Seq(
-  "io.chrisdavenport" %% "guardrail-http4s-sample" % "<version>"
-)
+#### getInventory
+```bash
+curl localhost:8080/api/v3/store/inventory | jq .
+```
+
+#### getOrderById
+```bash
+curl localhost:8080/api/v3/store/order/123 | jq .
+curl localhost:8080/api/v3/store/order/124 # 404
+```
+
+#### placeOrder
+```bash
+curl localhost:8080/api/v3/store/order \
+        -H 'Content-Type: application/json' \
+        --data '{"id": 124, "petId": 44, "quantity": 10}' \
+        | jq .
 ```

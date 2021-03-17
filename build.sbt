@@ -13,6 +13,7 @@ ThisBuild / githubWorkflowBuild := Seq(
 
 val http4sV = "0.21.20"
 val circeV = "0.13.0"
+val logbackClassicV = "1.2.3"
 
 val munitCatsEffectV = "0.12.0"
 
@@ -62,6 +63,8 @@ lazy val commonSettings = Seq(
     "io.circe"                    %% "circe-core"                 % circeV,
     "io.circe"                    %% "circe-generic"              % circeV,
     "io.circe"                    %% "circe-parser"               % circeV,
+
+    "ch.qos.logback"              % "logback-classic"             % logbackClassicV,
 
     "org.typelevel"               %% "munit-cats-effect-2"        % munitCatsEffectV         % Test,
   )
