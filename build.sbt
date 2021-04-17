@@ -21,10 +21,10 @@ val kindProjectorV = "0.11.3"
 val betterMonadicForV = "0.3.1"
 
 // Projects
-lazy val `guardrail-http4s-sample` = project.in(file("."))
+lazy val `guardrail-sample-http4s` = project.in(file("."))
   .settings(commonSettings)
   .settings(
-    name := "guardrail-http4s-sample",
+    name := "guardrail-sample-http4s",
 
 
     // Where all the magic lives
@@ -85,13 +85,13 @@ inThisBuild(List(
     Developer("ChristopherDavenport", "Christopher Davenport", "chris@christopherdavenport.tech", url("https://github.com/ChristopherDavenport"))
   ),
 
-  homepage := Some(url("https://github.com/guardrail-dev/guardrail-http4s-sample")),
+  homepage := Some(url("https://github.com/guardrail-dev/guardrail-sample-http4s")),
   licenses += ("MIT", url("http://opensource.org/licenses/MIT")),
 
   pomIncludeRepository := { _ => false},
   scalacOptions in (Compile, doc) ++= Seq(
       "-groups",
       "-sourcepath", (baseDirectory in LocalRootProject).value.getAbsolutePath,
-      "-doc-source-url", "https://github.com/guardrail-dev/guardrail-http4s-sample/blob/v" + version.value + "€{FILE_PATH}.scala"
+      "-doc-source-url", "https://github.com/guardrail-dev/guardrail-sample-http4s/blob/v" + version.value + "€{FILE_PATH}.scala"
   )
 ))
