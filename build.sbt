@@ -11,8 +11,8 @@ ThisBuild / githubWorkflowBuild := Seq(
   WorkflowStep.Sbt(List("test")),
 )
 
-val http4sV = "0.21.20"
-val circeV = "0.14.1"
+val http4sV = "0.22.6"
+val circeV = "0.13.0"
 val logbackClassicV = "1.2.3"
 
 val munitCatsEffectV = "0.12.0"
