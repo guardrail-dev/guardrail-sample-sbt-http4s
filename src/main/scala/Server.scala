@@ -1,7 +1,6 @@
 import cats.{Order => _, _}
 import cats.syntax.all._
 import cats.effect._
-import cats.effect.concurrent._
 
 import org.http4s.implicits._
 
@@ -10,18 +9,19 @@ import example.server.store._
 import org.http4s.ember.server.EmberServerBuilder
 import org.http4s.ember.client.EmberClientBuilder
 import scala.concurrent.duration._
+import cats.effect.{ Async, Ref }
 
 object Server {
 
-  def server[F[_]: Concurrent: Timer : ContextShift]: Resource[F, Unit] = for {
+  def server[F[_]: Async]: Resource[F, Unit] = for {
     // Shared State
-    inventory <- Resource.liftF(
+    inventory <- Resource.eval(
       Ref[F].of(Map[String, Int]( // Initial Inventory
         "Kibble" -> 10,
         "Treats" -> 3
       ))
     )
-    orders <- Resource.liftF(
+    orders <- Resource.eval(
       Ref[F].of(Map[Long, Order]( // Initial Orders
         123L -> Order(id = Some(123L), petId = Some(5L), quantity = Some(3), status = Some(Order.Status.Placed))
       ))
@@ -38,13 +38,13 @@ object Server {
     client <- EmberClientBuilder.default[F]
       .build
       .map(example.client.store.StoreClient.httpClient(_, "http://localhost:8080"))
-    _ <- Resource.liftF(
+    _ <- Resource.eval(
       client.placeOrder(example.client.definitions.Order(id = Some(5L)))
     )
-    resp <- Resource.liftF(
+    resp <- Resource.eval(
       client.getOrderById(5L)
     )
-    _ <- Resource.liftF(
+    _ <- Resource.eval(
       Sync[F].delay(println(resp))
     )
   } yield ()
