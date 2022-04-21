@@ -3,4 +3,4 @@ addSbtPlugin("ch.epfl.lamp" % "sbt-dotty" % "0.5.1")
 addSbtPlugin("com.codecommit" % "sbt-github-actions" % "0.9.5")
 
 // Add the plugin to the project
-addSbtPlugin("dev.guardrail" % "sbt-guardrail" % "0.68.1")
+addSbtPlugin("dev.guardrail" % "sbt-guardrail" % "0.70.0.2")
