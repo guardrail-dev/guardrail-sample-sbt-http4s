@@ -39,6 +39,14 @@ lazy val `guardrail-sample-http4s` = project.in(file("."))
 
   )
 
+lazy val customCirce = project.in(file("custom-circe"))
+  .settings(
+    libraryDependencies ++= Seq(
+      "dev.guardrail" %% "guardrail-scala-support" % "0.71.1",
+      "dev.guardrail" %% "guardrail-scala-http4s" % "0.72.0"
+    )
+  )
+
 // General Settings
 lazy val commonSettings = Seq(
   testFrameworks += new TestFramework("munit.Framework"),
