@@ -251,6 +251,7 @@ components:
         name:
           example: doggie
           type: string
+          default: Fluffy
         photoUrls:
           items:
             type: string

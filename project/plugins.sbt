@@ -9,5 +9,6 @@ libraryDependencies ++= Seq(
   "dev.guardrail" %% "guardrail-core" % "0.71.0",
   "dev.guardrail" %% "guardrail-scala-support" % "0.71.1",
   "dev.guardrail" %% "guardrail-scala-http4s" % "0.72.0",
-  "dev.guardrail" %% "guardrail" % "0.71.0"
+  "dev.guardrail" %% "guardrail" % "0.71.0",
+  // "com.example"   %% "customcirce" % "0.1.0-SNAPSHOT"  // Only uncomment this after running `++2.12.13; customCirce/publishLocal`!
 )

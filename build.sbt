@@ -20,6 +20,8 @@ val munitCatsEffectV = "0.12.0"
 val kindProjectorV = "0.13.2"
 val betterMonadicForV = "0.3.1"
 
+val guardrailModules = List("scala-language", "scala-stdlib", "custom-circe", "http4s")
+
 // Projects
 lazy val `guardrail-sample-http4s` = project.in(file("."))
   .settings(commonSettings)
@@ -33,8 +35,8 @@ lazy val `guardrail-sample-http4s` = project.in(file("."))
     // `/src/target/scala-2.13/src_managed/main/example`
     // with folder for server and client which hold their respective generated code.
     guardrailTasks in Compile := List(
-      ScalaServer(file("server.yaml"), pkg="example.server", framework="http4s", tagsBehaviour=tagsAsPackage),
-      ScalaClient(file("server.yaml"), pkg="example.client", framework="http4s", tagsBehaviour=tagsAsPackage),
+      ScalaServer(file("server.yaml"), pkg="example.server", modules=guardrailModules, tagsBehaviour=tagsAsPackage),
+      ScalaClient(file("server.yaml"), pkg="example.client", modules=guardrailModules, tagsBehaviour=tagsAsPackage),
     )
 
   )
