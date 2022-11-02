@@ -11,6 +11,10 @@ ThisBuild / githubWorkflowBuild := Seq(
   WorkflowStep.Sbt(List("test")),
 )
 
+ThisBuild / githubWorkflowPublishTargetBranches := Seq(
+  RefPredicate.Equals(Ref.Branch("master"))
+)
+
 val http4sV = "0.22.15"
 val circeV = "0.14.6"
 val logbackClassicV = "1.2.13"
