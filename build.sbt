@@ -1,4 +1,4 @@
-val Scala213 = "2.13.5"
+val Scala213 = "2.13.12"
 
 ThisBuild / crossScalaVersions := Seq("2.12.13", Scala213)
 ThisBuild / scalaVersion := crossScalaVersions.value.last
@@ -11,7 +11,7 @@ ThisBuild / githubWorkflowBuild := Seq(
   WorkflowStep.Sbt(List("test")),
 )
 
-val http4sV = "0.22.6"
+val http4sV = "0.22.13"
 val circeV = "0.13.0"
 val logbackClassicV = "1.2.3"
 
