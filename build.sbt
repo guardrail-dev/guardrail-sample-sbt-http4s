@@ -33,8 +33,8 @@ lazy val `guardrail-sample-http4s` = project.in(file("."))
     // `/src/target/scala-2.13/src_managed/main/example`
     // with folder for server and client which hold their respective generated code.
     guardrailTasks in Compile := List(
-      ScalaServer(file("server.yaml"), pkg="example.server", framework="http4s", tagsBehaviour=tagsAsPackage),
-      ScalaClient(file("server.yaml"), pkg="example.client", framework="http4s", tagsBehaviour=tagsAsPackage),
+      ScalaServer(file("server.yaml"), pkg="example.server", framework="http4s-v0.22", tagsBehaviour=tagsAsPackage),
+      ScalaClient(file("server.yaml"), pkg="example.client", framework="http4s-v0.22", tagsBehaviour=tagsAsPackage),
     )
 
   )
