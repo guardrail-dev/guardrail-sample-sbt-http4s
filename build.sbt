@@ -13,7 +13,7 @@ ThisBuild / githubWorkflowBuild := Seq(
 
 val http4sV = "0.22.15"
 val circeV = "0.14.6"
-val logbackClassicV = "1.2.3"
+val logbackClassicV = "1.2.13"
 
 val munitCatsEffectV = "0.13.1"
 
