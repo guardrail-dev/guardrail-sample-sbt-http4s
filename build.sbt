@@ -7,9 +7,7 @@ ThisBuild / githubWorkflowBuild := Seq(
   WorkflowStep.Sbt(List("test")),
 )
 
-ThisBuild / githubWorkflowPublishTargetBranches := Seq(
-  RefPredicate.Equals(Ref.Branch("master"))
-)
+ThisBuild / githubWorkflowPublishTargetBranches := Seq.empty
 
 ThisBuild / scalacOptions ++= Seq(
   "-deprecation"
