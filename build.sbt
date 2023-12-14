@@ -43,22 +43,10 @@ lazy val `guardrail-sample-http4s` = project.in(file("."))
 lazy val commonSettings = Seq(
   testFrameworks += new TestFramework("munit.Framework"),
   libraryDependencies ++= {
-    if (isDotty.value) Seq.empty
-    else Seq(
+    Seq(
       compilerPlugin("org.typelevel" % "kind-projector" % kindProjectorV cross CrossVersion.full),
       compilerPlugin("com.olegpy" %% "better-monadic-for" % betterMonadicForV),
     )
-  },
-  scalacOptions ++= {
-    if (isDotty.value) Seq("-source:3.0-migration")
-    else Seq()
-  },
-  Compile / doc / sources := {
-    val old = (Compile / doc / sources).value
-    if (isDotty.value)
-      Seq()
-    else
-      old
   },
 
   libraryDependencies ++= Seq(
