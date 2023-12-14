@@ -1,6 +1,6 @@
 val Scala213 = "2.13.12"
 
-ThisBuild / crossScalaVersions := Seq("2.12.13", Scala213)
+ThisBuild / crossScalaVersions := Seq("2.12.18", Scala213)
 ThisBuild / scalaVersion := crossScalaVersions.value.last
 
 ThisBuild / githubWorkflowArtifactUpload := false
@@ -11,11 +11,11 @@ ThisBuild / githubWorkflowBuild := Seq(
   WorkflowStep.Sbt(List("test")),
 )
 
-val http4sV = "0.22.13"
-val circeV = "0.13.0"
+val http4sV = "0.22.15"
+val circeV = "0.14.6"
 val logbackClassicV = "1.2.13"
 
-val munitCatsEffectV = "0.12.0"
+val munitCatsEffectV = "0.13.1"
 
 val kindProjectorV = "0.13.2"
 val betterMonadicForV = "0.3.1"
@@ -32,7 +32,7 @@ lazy val `guardrail-sample-http4s` = project.in(file("."))
     // after `sbt compile` files will be populated in
     // `/src/target/scala-2.13/src_managed/main/example`
     // with folder for server and client which hold their respective generated code.
-    guardrailTasks in Compile := List(
+    Compile / guardrailTasks := List(
       ScalaServer(file("server.yaml"), pkg="example.server", framework="http4s-v0.22", tagsBehaviour=tagsAsPackage),
       ScalaClient(file("server.yaml"), pkg="example.client", framework="http4s-v0.22", tagsBehaviour=tagsAsPackage),
     )
@@ -43,22 +43,10 @@ lazy val `guardrail-sample-http4s` = project.in(file("."))
 lazy val commonSettings = Seq(
   testFrameworks += new TestFramework("munit.Framework"),
   libraryDependencies ++= {
-    if (isDotty.value) Seq.empty
-    else Seq(
+    Seq(
       compilerPlugin("org.typelevel" % "kind-projector" % kindProjectorV cross CrossVersion.full),
       compilerPlugin("com.olegpy" %% "better-monadic-for" % betterMonadicForV),
     )
-  },
-  scalacOptions ++= {
-    if (isDotty.value) Seq("-source:3.0-migration")
-    else Seq()
-  },
-  Compile / doc / sources := {
-    val old = (Compile / doc / sources).value
-    if (isDotty.value)
-      Seq()
-    else
-      old
   },
 
   libraryDependencies ++= Seq(
@@ -78,6 +66,12 @@ lazy val commonSettings = Seq(
   )
 )
 
+Compile / doc / scalacOptions ++= Seq(
+    "-groups",
+    "-sourcepath", (LocalRootProject / baseDirectory).value.getAbsolutePath,
+    "-doc-source-url", "https://github.com/guardrail-dev/guardrail-sample-http4s/blob/v" + version.value + "€{FILE_PATH}.scala"
+)
+
 // General Settings
 inThisBuild(List(
   organization := "com.example",
@@ -89,9 +83,4 @@ inThisBuild(List(
   licenses += ("MIT", url("http://opensource.org/licenses/MIT")),
 
   pomIncludeRepository := { _ => false},
-  scalacOptions in (Compile, doc) ++= Seq(
-      "-groups",
-      "-sourcepath", (baseDirectory in LocalRootProject).value.getAbsolutePath,
-      "-doc-source-url", "https://github.com/guardrail-dev/guardrail-sample-http4s/blob/v" + version.value + "€{FILE_PATH}.scala"
-  )
 ))
