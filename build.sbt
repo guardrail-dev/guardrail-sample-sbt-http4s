@@ -15,7 +15,7 @@ val http4sV = "0.22.13"
 val circeV = "0.13.0"
 val logbackClassicV = "1.2.3"
 
-val munitCatsEffectV = "0.12.0"
+val munitCatsEffectV = "0.13.1"
 
 val kindProjectorV = "0.13.2"
 val betterMonadicForV = "0.3.1"
