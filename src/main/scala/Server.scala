@@ -15,13 +15,13 @@ object Server {
 
   def server[F[_]: Concurrent: Timer : ContextShift]: Resource[F, Unit] = for {
     // Shared State
-    inventory <- Resource.liftF(
+    inventory <- Resource.eval(
       Ref[F].of(Map[String, Int]( // Initial Inventory
         "Kibble" -> 10,
         "Treats" -> 3
       ))
     )
-    orders <- Resource.liftF(
+    orders <- Resource.eval(
       Ref[F].of(Map[Long, Order]( // Initial Orders
         123L -> Order(id = Some(123L), petId = Some(5L), quantity = Some(3), status = Some(Order.Status.Placed))
       ))
@@ -38,13 +38,13 @@ object Server {
     client <- EmberClientBuilder.default[F]
       .build
       .map(example.client.store.StoreClient.httpClient(_, "http://localhost:8080"))
-    _ <- Resource.liftF(
+    _ <- Resource.eval(
       client.placeOrder(example.client.definitions.Order(id = Some(5L)))
     )
-    resp <- Resource.liftF(
+    resp <- Resource.eval(
       client.getOrderById(5L)
     )
-    _ <- Resource.liftF(
+    _ <- Resource.eval(
       Sync[F].delay(println(resp))
     )
   } yield ()
@@ -68,7 +68,7 @@ object Server {
     // Weird that this is optional
     def placeOrder(respond: StoreResource.PlaceOrderResponse.type)(body: Order): F[StoreResource.PlaceOrderResponse] =
       for {
-        id <- body.id.fold(Sync[F].delay(scala.util.Random.nextLong))(_.pure[F])
+        id <- body.id.fold(Sync[F].delay(scala.util.Random.nextLong()))(_.pure[F])
         newOrder = body.copy(id = id.some)
         _ <- orders.update(m => m + (id -> newOrder))
       } yield respond.Ok(newOrder)
