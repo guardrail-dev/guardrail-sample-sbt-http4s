@@ -15,13 +15,13 @@ object Server {
 
   def server[F[_]: Concurrent: Timer : ContextShift]: Resource[F, Unit] = for {
     // Shared State
-    inventory <- Resource.liftF(
+    inventory <- Resource.eval(
       Ref[F].of(Map[String, Int]( // Initial Inventory
         "Kibble" -> 10,
         "Treats" -> 3
       ))
     )
-    orders <- Resource.liftF(
+    orders <- Resource.eval(
       Ref[F].of(Map[Long, Order]( // Initial Orders
         123L -> Order(id = Some(123L), petId = Some(5L), quantity = Some(3), status = Some(Order.Status.Placed))
       ))
@@ -38,37 +38,37 @@ object Server {
     client <- EmberClientBuilder.default[F]
       .build
       .map(example.client.store.StoreClient.httpClient(_, "http://localhost:8080"))
-    _ <- Resource.liftF(
+    _ <- Resource.eval(
       client.placeOrder(example.client.definitions.Order(id = Some(5L)))
     )
-    resp <- Resource.liftF(
+    resp <- Resource.eval(
       client.getOrderById(5L)
     )
-    _ <- Resource.liftF(
+    _ <- Resource.eval(
       Sync[F].delay(println(resp))
     )
   } yield ()
 
   def handler[F[_]: Sync](inventory: Ref[F, Map[String, Int]], orders: Ref[F, Map[Long, Order]]) = new StoreHandler[F]{
 
-    def getInventory(respond: GetInventoryResponse.type)(): F[GetInventoryResponse] = 
+    def getInventory(respond: StoreResource.GetInventoryResponse.type)(): F[StoreResource.GetInventoryResponse] =
       inventory.get.map(respond.Ok(_))
 
-    def deleteOrder(respond: DeleteOrderResponse.type)(orderId: Long): F[DeleteOrderResponse] = 
-      orders.modify{m => 
-        val out = m.get(orderId).fold[DeleteOrderResponse](respond.NotFound)(_ => respond.Accepted)
+    def deleteOrder(respond: StoreResource.DeleteOrderResponse.type)(orderId: Long): F[StoreResource.DeleteOrderResponse] =
+      orders.modify{m =>
+        val out = m.get(orderId).fold[StoreResource.DeleteOrderResponse](respond.NotFound)(_ => respond.Accepted)
         (m - orderId, out)
       }
 
-    def getOrderById(respond: GetOrderByIdResponse.type)(orderId: Long): F[GetOrderByIdResponse] = 
+    def getOrderById(respond: StoreResource.GetOrderByIdResponse.type)(orderId: Long): F[StoreResource.GetOrderByIdResponse] =
       orders.get
         .map(_.get(orderId))
-        .map(_.fold[GetOrderByIdResponse](respond.NotFound)(o => respond.Ok(o)))
+        .map(_.fold[StoreResource.GetOrderByIdResponse](respond.NotFound)(o => respond.Ok(o)))
 
     // Weird that this is optional
-    def placeOrder(respond: PlaceOrderResponse.type)(body: Order): F[PlaceOrderResponse] = 
+    def placeOrder(respond: StoreResource.PlaceOrderResponse.type)(body: Order): F[StoreResource.PlaceOrderResponse] =
       for {
-        id <- body.id.fold(Sync[F].delay(scala.util.Random.nextLong))(_.pure[F])
+        id <- body.id.fold(Sync[F].delay(scala.util.Random.nextLong()))(_.pure[F])
         newOrder = body.copy(id = id.some)
         _ <- orders.update(m => m + (id -> newOrder))
       } yield respond.Ok(newOrder)

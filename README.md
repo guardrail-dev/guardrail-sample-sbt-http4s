@@ -1,4 +1,4 @@
-# guardrail-sample-http4s - Guardrail with Http4s
+# guardrail-sample-http4s - guardrail with Http4s
 
 **Alumnus of the Davenverse**
 
