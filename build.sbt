@@ -1,21 +1,25 @@
-val Scala213 = "2.13.12"
-
-ThisBuild / crossScalaVersions := Seq("2.12.18", Scala213)
+ThisBuild / crossScalaVersions := Seq("2.12.18", "2.13.12")
 ThisBuild / scalaVersion := crossScalaVersions.value.last
 
 ThisBuild / githubWorkflowArtifactUpload := false
-
-val Scala213Cond = s"matrix.scala == '$Scala213'"
 
 ThisBuild / githubWorkflowBuild := Seq(
   WorkflowStep.Sbt(List("test")),
 )
 
-val http4sV = "0.22.15"
-val circeV = "0.14.6"
-val logbackClassicV = "1.2.13"
+ThisBuild / githubWorkflowPublishTargetBranches := Seq(
+  RefPredicate.Equals(Ref.Branch("master"))
+)
 
-val munitCatsEffectV = "0.13.1"
+ThisBuild / scalacOptions ++= Seq(
+  "-deprecation"
+)
+
+val http4sV = "0.23.16"
+val circeV = "0.14.6"
+val logbackClassicV = "1.4.4"
+
+val munitCatsEffectV = "1.0.7"
 
 val kindProjectorV = "0.13.2"
 val betterMonadicForV = "0.3.1"
@@ -33,8 +37,8 @@ lazy val `guardrail-sample-http4s` = project.in(file("."))
     // `/src/target/scala-2.13/src_managed/main/example`
     // with folder for server and client which hold their respective generated code.
     Compile / guardrailTasks := List(
-      ScalaServer(file("server.yaml"), pkg="example.server", framework="http4s-v0.22", tagsBehaviour=tagsAsPackage),
-      ScalaClient(file("server.yaml"), pkg="example.client", framework="http4s-v0.22", tagsBehaviour=tagsAsPackage),
+      ScalaServer(file("server.yaml"), pkg="example.server", framework="http4s", tagsBehaviour=tagsAsPackage),
+      ScalaClient(file("server.yaml"), pkg="example.client", framework="http4s", tagsBehaviour=tagsAsPackage),
     )
 
   )
@@ -62,7 +66,7 @@ lazy val commonSettings = Seq(
 
     "ch.qos.logback"              % "logback-classic"             % logbackClassicV,
 
-    "org.typelevel"               %% "munit-cats-effect-2"        % munitCatsEffectV         % Test,
+    "org.typelevel"               %% "munit-cats-effect-3"        % munitCatsEffectV         % Test,
   )
 )
 

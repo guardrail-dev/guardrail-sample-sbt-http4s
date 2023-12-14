@@ -1,7 +1,6 @@
 import cats.{Order => _, _}
 import cats.syntax.all._
 import cats.effect._
-import cats.effect.concurrent._
 
 import org.http4s.implicits._
 
@@ -13,7 +12,7 @@ import scala.concurrent.duration._
 
 object Server {
 
-  def server[F[_]: Concurrent: Timer : ContextShift]: Resource[F, Unit] = for {
+  def server[F[_]: Async]: Resource[F, Unit] = for {
     // Shared State
     inventory <- Resource.eval(
       Ref[F].of(Map[String, Int]( // Initial Inventory
