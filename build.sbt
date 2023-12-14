@@ -32,7 +32,7 @@ lazy val `guardrail-sample-http4s` = project.in(file("."))
     // after `sbt compile` files will be populated in
     // `/src/target/scala-2.13/src_managed/main/example`
     // with folder for server and client which hold their respective generated code.
-    guardrailTasks in Compile := List(
+    Compile / guardrailTasks := List(
       ScalaServer(file("server.yaml"), pkg="example.server", framework="http4s-v0.22", tagsBehaviour=tagsAsPackage),
       ScalaClient(file("server.yaml"), pkg="example.client", framework="http4s-v0.22", tagsBehaviour=tagsAsPackage),
     )
@@ -78,6 +78,12 @@ lazy val commonSettings = Seq(
   )
 )
 
+Compile / doc / scalacOptions ++= Seq(
+    "-groups",
+    "-sourcepath", (LocalRootProject / baseDirectory).value.getAbsolutePath,
+    "-doc-source-url", "https://github.com/guardrail-dev/guardrail-sample-http4s/blob/v" + version.value + "€{FILE_PATH}.scala"
+)
+
 // General Settings
 inThisBuild(List(
   organization := "com.example",
@@ -89,9 +95,4 @@ inThisBuild(List(
   licenses += ("MIT", url("http://opensource.org/licenses/MIT")),
 
   pomIncludeRepository := { _ => false},
-  scalacOptions in (Compile, doc) ++= Seq(
-      "-groups",
-      "-sourcepath", (baseDirectory in LocalRootProject).value.getAbsolutePath,
-      "-doc-source-url", "https://github.com/guardrail-dev/guardrail-sample-http4s/blob/v" + version.value + "€{FILE_PATH}.scala"
-  )
 ))
