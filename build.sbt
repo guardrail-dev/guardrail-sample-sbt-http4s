@@ -19,7 +19,7 @@ val logbackClassicV = "1.4.4"
 
 val munitCatsEffectV = "1.0.7"
 
-val kindProjectorV = "0.13.2"
+val kindProjectorV = "0.13.3"
 val betterMonadicForV = "0.3.1"
 
 // Projects
