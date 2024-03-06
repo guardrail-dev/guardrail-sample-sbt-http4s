@@ -13,7 +13,7 @@ ThisBuild / scalacOptions ++= Seq(
   "-deprecation"
 )
 
-val http4sV = "0.23.16"
+val http4sV = "0.23.26"
 val circeV = "0.14.6"
 val logbackClassicV = "1.4.4"
 
