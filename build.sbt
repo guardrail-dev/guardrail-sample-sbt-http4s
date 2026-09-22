@@ -17,7 +17,7 @@ val http4sV = "0.23.16"
 val circeV = "0.14.6"
 val logbackClassicV = "1.4.4"
 
-val munitCatsEffectV = "1.0.7"
+val munitCatsEffectV = "2.2.1"
 
 val kindProjectorV = "0.13.2"
 val betterMonadicForV = "0.3.1"
@@ -64,7 +64,7 @@ lazy val commonSettings = Seq(
 
     "ch.qos.logback"              % "logback-classic"             % logbackClassicV,
 
-    "org.typelevel"               %% "munit-cats-effect-3"        % munitCatsEffectV         % Test,
+    "org.typelevel"               %% "munit-cats-effect"        % munitCatsEffectV         % Test,
   )
 )
 
