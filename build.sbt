@@ -14,7 +14,7 @@ ThisBuild / scalacOptions ++= Seq(
 )
 
 val http4sV = "0.23.16"
-val circeV = "0.14.6"
+val circeV = "0.14.17"
 val logbackClassicV = "1.4.4"
 
 val munitCatsEffectV = "1.0.7"
